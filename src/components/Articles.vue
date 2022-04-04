@@ -16,21 +16,21 @@
                         <div class="col-12">
                             <span class="fs-5 badge bg-secondary my-2">{{ filterLabel( post.category ) }}</span>
                         </div>
-                            <p class="col-12">{{ filterText( post.content ) }}</p>
-                        </div>
+                        <p class="col-12">{{ filterText( post.content ) }}</p>
+                    </div>
                 </div>
                 <div class="col-12 d-block d-sm-none">
                     <form class="row border p-1" @submit.prevent="">
-                        <div class="col-3">
-                            <button class="btn w-100 text-danger">
+                        <div class="col-4">
+                            <button class="btn btn-light text-danger w-100" @click="minusItem(index)">
                                 <i class="fas fa-minus"></i>
                             </button>
                         </div>
-                        <div class="col-6">
-                            <input class="form-control w-100 text-center" type="number" value="1">
+                        <div class="col-4">
+                            <input class="form-control w-100 text-center" type="number" v-model.number='post.quantity' :name='"quantity"+index' min="0" max='50' />
                         </div>
-                        <div class="col-3">
-                            <button class="btn w-100 text-success">
+                        <div class="col-4">
+                            <button class="btn btn-light text-primary w-100" @click="plusItem(index)">
                                 <i class="fas fa-plus"></i>
                             </button>
                         </div>
@@ -48,26 +48,41 @@ import { mapState } from 'vuex'
 export default {
 
     name: 'Articles',
+    data(){
+        return{
+            item: {
+                id:             null,
+                title:          null,
+                picture:        null,
+                quantity:       null,
+                price:          null
+            }
+        }
+    },
     computed: {
         ...mapState('blogger', ['posts'])
     },
     methods: {
         filterLabel( evt ){
-            if(evt.length == 0){
+            if(evt.length < 1){
                 return 'Varios'
-            }else if (evt.length == 1) {
-                return evt[0].term
             } else {
-                return evt[0].term
+                if( parseInt(evt[0].term) ){
+                    return evt[1].term
+                }else{
+                    return evt[0].term
+                }
             }
         },
         filterPrice( evento ){
-            if(evento.length == 0){
+            if(evento.length < 1){
                 return '500'
-            }else if (evento.length == 1) {
-                return evento[1].term
             } else {
-                return evento[1].term
+                if( parseInt(evento[0].term) ){
+                    return evento[0].term
+                }else{
+                    return evento[1].term
+                }
             }
         },
         filterText( x ){
@@ -77,6 +92,29 @@ export default {
         },
         filterImage( y ){
             return y.replace('s72', 's320')
+        },
+        filterID( z ){
+            // Extract with regex
+            const id = ( z.match(/\post-\d+/g) ).toString();
+            id.substring(id.indexOf('-')+1);
+            return z.substring(z.lastIndexOf('-')+1)
+        },
+        makeItem( y ){
+            this.item.id    =   y;
+
+            if( y ){
+
+            }
+        },
+        minusItem( idx ){
+            if( this.posts[idx].quantity >1 ){
+                this.posts[idx].quantity--
+            }
+        },
+        plusItem( index ){
+            if( this.posts[index].quantity < 9 ){
+                this.posts[index].quantity++
+            }
         }
     }
 
