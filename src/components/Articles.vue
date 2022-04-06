@@ -22,15 +22,21 @@
                 <div class="col-12 d-block d-sm-none">
                     <form class="row border p-1" @submit.prevent="">
                         <div class="col-4">
-                            <button class="btn btn-light text-danger w-100" @click="minusItem(index)">
-                                <i class="fas fa-minus"></i>
+                            <button v-if='post.quantity === 0' class="btn btn-light w-100" type="button" disabled>
+                                <i class="fas fa-ban text-secondary" ></i>
+                            </button>
+                            <button v-else-if='post.quantity === 1' class="btn btn-light w-100" type="button" @click.stop="[minusItem(index),deleteProduct(index)]">
+                                <i class="far fa-trash-alt text-danger" ></i>
+                            </button>
+                            <button v-else class="btn btn-light w-100" type="button" @click.stop="[minusItem(index),preOrder(post.id.$t, post.title.$t, post.quantity, parseInt(post.category[0].term) ? parseInt(post.category[0].term) : parseInt(post.category[1].term))]" >
+                                <i class="fas fa-minus text-danger" ></i>
                             </button>
                         </div>
                         <div class="col-4">
                             <input class="form-control w-100 text-center" type="number" v-model.number='post.quantity' :name='"quantity"+index' min="0" max='50' />
                         </div>
                         <div class="col-4">
-                            <button class="btn btn-light text-primary w-100" @click="plusItem(index)">
+                            <button class="btn btn-light text-primary w-100" type="button" @click.stop="[plusItem(index), preOrder(post.id.$t, post.title.$t, post.quantity, parseInt(post.category[0].term) ? parseInt(post.category[0].term) : parseInt(post.category[1].term))]">
                                 <i class="fas fa-plus"></i>
                             </button>
                         </div>
@@ -42,27 +48,18 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapMutations } from 'vuex'
 
 
 export default {
 
     name: 'Articles',
-    data(){
-        return{
-            item: {
-                id:             null,
-                title:          null,
-                picture:        null,
-                quantity:       null,
-                price:          null
-            }
-        }
-    },
     computed: {
-        ...mapState('blogger', ['posts'])
+        ...mapState('blogger', ['posts']),
+        ...mapState(['car']),
     },
     methods: {
+        ...mapMutations(['addToCar', 'updateCar', 'deleteProduct']),
         filterLabel( evt ){
             if(evt.length < 1){
                 return 'Varios'
@@ -99,15 +96,23 @@ export default {
             id.substring(id.indexOf('-')+1);
             return z.substring(z.lastIndexOf('-')+1)
         },
-        makeItem( y ){
-            this.item.id    =   y;
-
-            if( y ){
-
+        preOrder( productID, productTitle, productQuantity, productPrice ){
+            // Donst use data return, because allways use only one space in array
+            const item = {
+                id          :   productID,
+                title       :   productTitle,
+                quantity    :   productQuantity,
+                price       :   productPrice
+            }
+            const buscaDuplicado = this.car.indexOf( this.car.find( c => c.id === item.id ) );
+            if( buscaDuplicado >= 0 ){
+                this.updateCar({productQuantity, productPrice, buscaDuplicado});
+            }else{
+                this.addToCar(item);
             }
         },
         minusItem( idx ){
-            if( this.posts[idx].quantity >1 ){
+            if( this.posts[idx].quantity >0 ){
                 this.posts[idx].quantity--
             }
         },

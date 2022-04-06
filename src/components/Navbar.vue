@@ -6,7 +6,8 @@
             <i class="navbar-toggler-icon"></i>
         </button>
         <button class="btn btn-dark d-block d-sm-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight" >
-            <i class="fas fa-shopping-cart fa-lg"></i>
+            <i class="fas fa-shopping-cart fa-lg me-1"></i>
+            <span class="badge rounded-pill bg-danger">{{ totalItems }}</span>
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
@@ -38,15 +39,16 @@
 
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 
 
 export default {
 
     name: 'Navbar',
     computed: {
-      ...mapState('blogger', ['title'])
-    },
+      ...mapState('blogger', ['title']),
+      ...mapGetters(['totalItems']),
+    }
 
 }
 </script>
