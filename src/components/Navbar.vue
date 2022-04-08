@@ -17,11 +17,6 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-uppercase" href="#promotions">
-                        Promociones
-                    </a>
-                </li>
-                <li class="nav-item">
                     <a class="nav-link text-uppercase" href="#menu">
                         Menú
                     </a>

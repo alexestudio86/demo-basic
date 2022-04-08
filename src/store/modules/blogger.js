@@ -28,7 +28,7 @@ export default {
     getAllData: async function ({ commit }) {
       try{
         // Limitado a 199 elementos
-        const data          = await fetch(`https://www.blogger.com/feeds/5038678016736099105/posts/default?alt=json&max-results=2`);
+        const data          = await fetch(`https://www.blogger.com/feeds/5038678016736099105/posts/default?alt=json&max-results=100`);
         /*
         const data          = await fetch(`https://paraisodj.blogspot.com/feeds/5038678016736099105/posts/default`, {
           'mode': 'cors',

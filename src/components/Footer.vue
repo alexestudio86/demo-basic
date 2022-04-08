@@ -1,5 +1,5 @@
 <template>
-  <footer>
+  <footer id='contact'>
       <div class="bg-secondary py-1">
           <div class="container">
               <div class="row">
